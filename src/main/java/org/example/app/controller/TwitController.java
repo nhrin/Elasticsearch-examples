@@ -50,6 +50,7 @@ public class TwitController {
         }
         return "listTwits";
     }
+
     @PostMapping("/saveTwit")
     public String saveTwit(Twit twit, Model model) {
         model.addAttribute("message", "Twit created by "
@@ -59,7 +60,7 @@ public class TwitController {
         return "saveTwit";
     }
 
-    @GetMapping("/searchingResult")
+    @GetMapping("/search")
     public String getSearchedTwits(@RequestParam("query") String query, Model model) {
         List<Twit> twits = twitService.findDocsByContent(query);
         model.addAttribute("twits", twits);

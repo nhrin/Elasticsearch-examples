@@ -1,4 +1,4 @@
-package org.example.app.solrclient;
+package org.example.app.elasticclient;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
@@ -25,14 +25,17 @@ public class TwitElasticsearchClient {
 
     private final int PORT;
 
-    private final ElasticsearchClient client = init();
+    @Value("${elastic.index}")
+    private String index;
 
-    public TwitElasticsearchClient(@Value("${elastic.hostname}")String hostname, @Value("${elastic.port}")int port) {
+    private final ElasticsearchClient CLIENT = init();
+
+    public TwitElasticsearchClient(@Value("${elastic.hostname}") String hostname, @Value("${elastic.port}") int port) {
         this.HOSTNAME = hostname;
         this.PORT = port;
     }
 
-    public ElasticsearchClient init () {
+    public ElasticsearchClient init() {
         RestClient restClient = RestClient.builder(
                         new HttpHost("localhost", 9200)
                 )
@@ -42,32 +45,27 @@ public class TwitElasticsearchClient {
         return new ElasticsearchClient(transport);
     }
 
-    @Value("${elastic.index}")
-    private String INDEX;
-    
     @SneakyThrows
     public void addDoc(Twit twit) {
         JsonData jsonData = JsonData.fromJson("{\"id\":\"" + twit.getId()
                 + "\",\"content\":\"" + twit.getContent() + "\"}");
-        IndexResponse response = client.index(i -> i
-                .index(INDEX)
+        IndexResponse response = CLIENT.index(i -> i
+                .index(index)
                 .document(jsonData)
         );
     }
 
     @SneakyThrows
     public List<String> findListIdByContent(String userQuery) {
-        SearchResponse<JsonData> response = client.search(s -> s
-                        .index(INDEX)
-                        .query(q -> q
-                                .match(t -> t
-                                        .field("content")
-                                        .query(userQuery)
-                                )
-                        ),
-                JsonData.class
-        );
+        SearchResponse<JsonData> response = CLIENT.search(s -> s
+                        .index(index)
+                        .query(q -> q.match(t -> t
+                                .field("content")
+                                .query(userQuery))),
+                JsonData.class);
+
         List<Hit<JsonData>> hits = response.hits().hits();
+
         return hits.stream()
                 .map(hit -> hit.source().toJson().asJsonObject().get("id").toString().replaceAll("\"", ""))
                 .collect(Collectors.toList());

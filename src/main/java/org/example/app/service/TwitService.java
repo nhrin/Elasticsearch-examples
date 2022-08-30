@@ -3,7 +3,7 @@ package org.example.app.service;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.example.app.repository.TwitRepository;
-import org.example.app.solrclient.TwitElasticsearchClient;
+import org.example.app.elasticclient.TwitElasticsearchClient;
 import org.example.app.entity.Twit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
