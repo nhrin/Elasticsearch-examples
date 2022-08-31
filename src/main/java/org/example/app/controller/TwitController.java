@@ -2,6 +2,7 @@ package org.example.app.controller;
 
 import org.example.app.entity.Twit;
 import org.example.app.service.TwitService;
+import org.example.app.service.TwitServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

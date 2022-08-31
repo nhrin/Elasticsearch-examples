@@ -35,7 +35,7 @@ public class TwitElasticsearchClient {
         this.PORT = port;
     }
 
-    public ElasticsearchClient init() {
+    private ElasticsearchClient init() {
         RestClient restClient = RestClient.builder(
                         new HttpHost("localhost", 9200)
                 )
